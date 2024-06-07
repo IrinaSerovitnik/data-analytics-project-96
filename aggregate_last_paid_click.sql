@@ -1,6 +1,6 @@
---витрина данных с расходами на рекламу (no organic)
+--Витрина данных с расходами на рекламу (no organic)
 with last_visits as (
---расчёт даты последнего визита пользователя
+    --расчёт даты последнего визита пользователя
     select
         visitor_id,
         max(visit_date) as last_visit
@@ -46,7 +46,7 @@ last_paid_click_agg as (
         lpc.utm_source,
         lpc.utm_medium,
         lpc.utm_campaign,
-        count(lpc.*) as visitors_count,
+        count(lpc.visitor_id) as visitors_count,
         count(lpc.lead_id) as leads_count,
         sum(case when lpc.status_id = 142 then 1 else 0 end) as purchases_count,
         sum(lpc.amount) as revenue

@@ -1,6 +1,6 @@
 --витрина данных для модели атрибуции Last Paid Click (no organic)
 with last_visits as (
---расчёт даты последнего визита пользователя
+    --расчёт даты последнего визита пользователя
     select
         visitor_id,
         max(visit_date) as last_visit

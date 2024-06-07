@@ -1,6 +1,6 @@
 --Витрина данных с расходами на рекламу (no organic)
 with last_visits as (
---расчёт даты последнего визита пользователя
+    --расчёт даты последнего визита пользователя
     select
         visitor_id,
         max(visit_date) as last_visit
@@ -46,7 +46,7 @@ last_paid_click_agg as (
         lpc.utm_source,
         lpc.utm_medium,
         lpc.utm_campaign,
-        count(lpc.*) as visitors_count,
+        count(lpc.visitor_id) as visitors_count,
         count(lpc.lead_id) as leads_count,
         sum(case when lpc.status_id = 142 then 1 else 0 end) as purchases_count,
         sum(lpc.amount) as revenue
@@ -90,10 +90,10 @@ ads_cost as (
 --соединение данных по количеству посетителей, доходам и расходам
 select
     lpca.visit_date,
+    lpca.visitors_count,
     lpca.utm_source,
     lpca.utm_medium,
     lpca.utm_campaign,
-    lpca.visitors_count,
     ac.total_cost,
     lpca.leads_count,
     lpca.purchases_count,
@@ -115,7 +115,7 @@ order by
 
 --Расчёт количества дней от клика до покупки (no organic)
 with last_visits as (
---расчёт даты последнего визита пользователя
+    --расчёт даты последнего визита пользователя
     select
         visitor_id,
         max(visit_date) as last_visit
@@ -138,7 +138,7 @@ select
     l.status_id,
     l.created_at - s.visit_date as diff_date,
     count(l.created_at - s.visit_date)
-        over (order by l.created_at - s.visit_date)
+    over (order by l.created_at - s.visit_date)
     as count_total_diff
 from sessions as s
 inner join last_visits as lv
@@ -199,7 +199,7 @@ select
     lpc.utm_source,
     lpc.utm_medium,
     lpc.utm_campaign,
-    count(lpc.*) as visitors_count,
+    count(lpc.visitor_id) as visitors_count,
     count(lpc.lead_id) as leads_count,
     sum(case when lpc.status_id = 142 then 1 else 0 end) as purchases_count,
     sum(lpc.amount) as revenue
@@ -212,7 +212,7 @@ group by
 order by
     sum(lpc.amount) desc nulls last,
     lpc.visit_date::date asc,
-    count(lpc.*) desc,
+    count(lpc.visitor_id) desc,
     lpc.utm_source asc,
     lpc.utm_medium asc,
     lpc.utm_campaign asc;
